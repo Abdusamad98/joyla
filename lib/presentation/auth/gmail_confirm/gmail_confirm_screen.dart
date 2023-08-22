@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
-import 'package:joyla/main.dart';
-import 'package:joyla/presentation/auth/gmail_confirm/pages/code_input.dart';
-import 'package:joyla/presentation/auth/gmail_confirm/pages/email_password_input.dart';
+import 'package:joyla/data/models/user/user_model.dart';
+import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
+import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
+import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
 
 class GmailConfirmScreen extends StatefulWidget {
-  const GmailConfirmScreen({super.key});
+  GmailConfirmScreen({super.key, required this.userModel});
+
+  UserModel userModel;
 
   @override
   State<GmailConfirmScreen> createState() => _GmailConfirmScreenState();
 }
 
 class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
-  final PageController pageController = PageController();
-
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController gmailController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +27,24 @@ class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         builder: (context, state) {
+          if (state is AuthLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: PageView(
-                  controller: pageController,
-                  children: [
-                    EmailPasswordInput(
-                      gmailController: gmailController,
-                      passwordController: passwordController,
-                    ),
-                    CodeInput(),
-                  ],
-                ),
+              GlobalTextField(
+                hintText: "Code",
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                controller: codeController,
               ),
               GlobalButton(
-                title: "Next",
+                title: "Confirm",
                 onTap: () {
-                  context.read<AuthCubit>().sendCodeToGmail(
-                        gmailController.text,
-                        passwordController.text,
-                      );
+                  context.read<AuthCubit>().confirmGmail(codeController.text);
                 },
               ),
               const SizedBox(height: 50)
@@ -56,12 +52,16 @@ class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
           );
         },
         listener: (context, state) {
-          if (state is AuthSendCodeSuccessState) {
-            pageController.animateToPage(
-              1,
-              duration: const Duration(seconds: 1),
-              curve: Curves.linear,
-            );
+          if (state is AuthConfirmCodeSuccessState) {
+            context.read<AuthCubit>().registerUser(widget.userModel);
+          }
+
+          if (state is AuthLoggedState) {
+            Navigator.pushReplacementNamed(context, RouteNames.tabBox);
+          }
+
+          if (state is AuthErrorState) {
+            showErrorMessage(message: state.errorText, context: context);
           }
         },
       ),

@@ -1,4 +1,3 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
@@ -21,14 +20,8 @@ class AuthRepository {
   Future<UniversalData> confirmCode({required String code}) async =>
       apiService.confirmCode(code: code);
 
-  Future<UniversalData> registerUser({
-    required UserModel userModel,
-    required XFile file,
-  }) async =>
-      apiService.registerUser(
-        userModel: userModel,
-        file: file,
-      );
+  Future<UniversalData> registerUser({required UserModel userModel}) async =>
+      apiService.registerUser(userModel: userModel);
 
   Future<UniversalData> loginUser({
     required String gmail,
@@ -40,4 +33,9 @@ class AuthRepository {
       );
 
   String getToken() => StorageRepository.getString("token");
+
+  Future<bool?> deleteToken() async => StorageRepository.deleteString("token");
+
+  Future<void> setToken(String newToken) async =>
+      StorageRepository.putString("token", newToken);
 }

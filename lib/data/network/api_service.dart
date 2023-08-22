@@ -100,22 +100,19 @@ class ApiService {
   }
 
   Future<UniversalData> registerUser({
-    required UserModel userModel,
-    required XFile file,
+    required UserModel userModel
   }) async {
     Response response;
-
     _dio.options.headers = {
       "Accept": "multipart/form-data",
     };
     try {
       response = await _dio.post(
         '/register',
-        data: userModel.getFormData(file),
+        data: await userModel.getFormData(),
       );
-
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        return UniversalData(data: response.data["message"]);
+        return UniversalData(data: response.data["data"]);
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
@@ -144,7 +141,7 @@ class ApiService {
       );
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        return UniversalData(data: UserModel.fromJson(response.data["data"]));
+        return UniversalData(data: response.data["data"]);
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {

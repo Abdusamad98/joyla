@@ -15,9 +15,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _init() async {
     if (StorageRepository.getString("token").isEmpty) {
-      Navigator.pushReplacementNamed(context, RouteNames.authScreen);
+      Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
     } else {
-      Navigator.pushReplacementNamed(context, RouteNames.authScreen);
+      Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
     }
   }
 
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
         },
         listener: (context, state) {
           if (state is AuthUnAuthenticatedState) {
-            Navigator.pushReplacementNamed(context, RouteNames.authScreen);
+            Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
           }
           if (state is AuthLoggedState) {
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
