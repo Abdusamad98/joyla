@@ -1,7 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
-import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
 import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
@@ -81,6 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           );
         },
+        // buildWhen: (previous,current){
+        //   return previous!=current;//false
+        // },
+        buildWhen: (previous,current){
+          print("PREVIOUS:$previous AND CURRENT:$current");
+          return true;
+        },
         listener: (context, state) {
           if (state is AuthLoggedState) {
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
@@ -90,6 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
             showErrorMessage(message: state.errorText, context: context);
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          context.read<AuthCubit>().updateState();
+        },
+        child: const Icon(Icons.update),
       ),
     );
   }

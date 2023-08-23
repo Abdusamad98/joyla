@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
@@ -82,4 +83,10 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthUnAuthenticatedState());
     }
   }
+
+
+  updateState(){
+    emit(AuthInitial());
+  }
+
 }
