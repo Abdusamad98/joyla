@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/tab/tab_cubit.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/tab/articles/articles_screen.dart';
 import 'package:joyla/presentation/tab/profile/profile_screen.dart';
@@ -14,8 +15,6 @@ class TabBox extends StatefulWidget {
 
 class _TabBoxState extends State<TabBox> {
   List<Widget> screens = [];
-
-  int currentIndex = 0;
 
   @override
   void initState() {
@@ -31,7 +30,7 @@ class _TabBoxState extends State<TabBox> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<AuthCubit, AuthState>(
-        child: screens[currentIndex],
+        child: screens[context.watch<TabCubit>().state],
         listener: (context, state) {
           if (state is AuthUnAuthenticatedState) {
             Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
@@ -43,12 +42,8 @@ class _TabBoxState extends State<TabBox> {
           BottomNavigationBarItem(icon: Icon(Icons.article), label: "Article"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
+        currentIndex: context.watch<TabCubit>().state,
+        onTap: context.read<TabCubit>().changeTabIndex,
       ),
     );
   }

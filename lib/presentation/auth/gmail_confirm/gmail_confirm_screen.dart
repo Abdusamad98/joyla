@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/user_data/user_data_cubit.dart';
 import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
@@ -17,7 +18,7 @@ class GmailConfirmScreen extends StatefulWidget {
 }
 
 class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
-  final TextEditingController codeController = TextEditingController();
+  String code = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +40,14 @@ class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 textAlign: TextAlign.start,
-                controller: codeController,
+                onChanged: (v) {
+                  code = v;
+                },
               ),
               GlobalButton(
                 title: "Confirm",
                 onTap: () {
-                  context.read<AuthCubit>().confirmGmail(codeController.text);
+                  context.read<AuthCubit>().confirmGmail(code);
                 },
               ),
               const SizedBox(height: 50)
@@ -57,7 +60,9 @@ class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
           }
 
           if (state is AuthLoggedState) {
-            Navigator.pushReplacementNamed(context, RouteNames.tabBox);
+            context.read<UserDataCubit>().clearData();
+            Navigator.pushNamedAndRemoveUntil(
+                context, RouteNames.tabBox, (c) => false);
           }
 
           if (state is AuthErrorState) {

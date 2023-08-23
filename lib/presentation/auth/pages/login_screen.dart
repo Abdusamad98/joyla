@@ -17,14 +17,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController gmailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  String gmail = "";
+  String password = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login page"),
+        title: const Text("Login page"),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         builder: (context, state) {
@@ -42,31 +42,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 textAlign: TextAlign.start,
-                controller: gmailController,
+                onChanged: (v) {
+                  gmail = v;
+                },
               ),
               GlobalTextField(
                 hintText: "Password",
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 textAlign: TextAlign.start,
-                controller: passwordController,
+                onChanged: (v) {
+                  password = v;
+                },
               ),
               GlobalButton(
                   title: ("Login"),
                   onTap: () {
-                    context.read<AuthCubit>().loginUser(
-                          gmail: gmailController.text,
-                          password: passwordController.text,
-                        );
+                    if (gmail.isNotEmpty && password.isNotEmpty) {
+                      context.read<AuthCubit>().loginUser(
+                            gmail: gmail,
+                            password: password,
+                          );
+                    }
                   }),
               TextButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(
                       context, RouteNames.registerScreen);
                 },
-                child: Text(
-                  "Sign Up T:${StorageRepository.getString("token")}",
-                  style: const TextStyle(
+                child: const Text(
+                  "Sign Up",
+                  style: TextStyle(
                       color: Color(0xFF4F8962),
                       fontSize: 18,
                       fontWeight: FontWeight.w800),
@@ -76,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         },
         listener: (context, state) {
-
           if (state is AuthLoggedState) {
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
           }

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
-import 'package:joyla/data/models/user/user_model.dart';
+import 'package:joyla/cubits/user_data/user_data_cubit.dart';
+import 'package:joyla/data/models/user/user_field_keys.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/gender_selector.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
@@ -18,22 +19,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController gmailController = TextEditingController();
-  final TextEditingController professionController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
   ImagePicker picker = ImagePicker();
-
-  XFile? file;
-
-  int gender = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up Page"),),
+      appBar: AppBar(
+        title: const Text("Sign Up Page"),
+      ),
       body: BlocConsumer<AuthCubit, AuthState>(builder: (context, state) {
         if (state is AuthLoadingState) {
           return const Center(child: CircularProgressIndicator());
@@ -46,56 +39,69 @@ class _RegisterScreenState extends State<RegisterScreen> {
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               textAlign: TextAlign.start,
-              controller: usernameController,
+              onChanged: (v) {
+                context.read<UserDataCubit>().updateCurrentUserField(
+                      fieldKey: UserFieldKeys.username,
+                      value: v,
+                    );
+              },
             ),
             GlobalTextField(
               hintText: "Contact",
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
               textAlign: TextAlign.start,
-              controller: phoneController,
+              onChanged: (v) {
+                context.read<UserDataCubit>().updateCurrentUserField(
+                      fieldKey: UserFieldKeys.contact,
+                      value: v,
+                    );
+              },
             ),
             GlobalTextField(
               hintText: "Gmail",
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               textAlign: TextAlign.start,
-              controller: gmailController,
+              onChanged: (v) {
+                context.read<UserDataCubit>().updateCurrentUserField(
+                      fieldKey: UserFieldKeys.email,
+                      value: v,
+                    );
+              },
             ),
             GlobalTextField(
               hintText: "Profession",
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               textAlign: TextAlign.start,
-              controller: professionController,
+              onChanged: (v) {
+                context.read<UserDataCubit>().updateCurrentUserField(
+                      fieldKey: UserFieldKeys.profession,
+                      value: v,
+                    );
+              },
             ),
             GlobalTextField(
               hintText: "Password",
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               textAlign: TextAlign.start,
-              controller: passwordController,
+              onChanged: (v) {
+                context.read<UserDataCubit>().updateCurrentUserField(
+                      fieldKey: UserFieldKeys.password,
+                      value: v,
+                    );
+              },
             ),
             const SizedBox(height: 20),
-            GenderSelector(
-              onMaleTap: () {
-                setState(() {
-                  gender = 1;
-                });
-              },
-              onFemaleTap: () {
-                setState(() {
-                  gender = 0;
-                });
-              },
-              gender: gender,
-            ),
+            const GenderSelector(),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
               },
               child: const Text(
-                "Ligin",
+                "Login",
                 style: TextStyle(
                     color: Color(0xFF4F8962),
                     fontSize: 18,
@@ -106,41 +112,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
             GlobalButton(
                 title: "Register",
                 onTap: () {
-                  if (file != null &&
-                      usernameController.text.isNotEmpty &&
-                      phoneController.text.isNotEmpty &&
-                      gmailController.text.isNotEmpty &&
-                      professionController.text.isNotEmpty &&
-                      passwordController.text.length > 5) {
+                  if (context.read<UserDataCubit>().canRegister()) {
                     context.read<AuthCubit>().sendCodeToGmail(
-                          gmailController.text,
-                          passwordController.text,
+                          context.read<UserDataCubit>().state.userModel.email,
+                          context
+                              .read<UserDataCubit>()
+                              .state
+                              .userModel
+                              .password,
                         );
+                  }else{
+                    showErrorMessage(message: "Maydonlar to'liq emas", context: context);
                   }
                 }),
             TextButton(
                 onPressed: () {
                   showBottomSheetDialog();
                 },
-                child: Text("Select image"))
+                child: const Text("Select image"))
           ],
         );
       }, listener: (context, state) {
         if (state is AuthSendCodeSuccessState) {
-          UserModel userModel = UserModel(
-            password: passwordController.text,
-            username: usernameController.text,
-            email: gmailController.text,
-            avatar: file!.path,
-            contact: phoneController.text,
-            gender: gender.toString(),
-            profession: professionController.text,
-            role: "male",
-          );
           Navigator.pushNamed(
             context,
             RouteNames.confirmGmail,
-            arguments: userModel,
+            arguments: context.read<UserDataCubit>().state.userModel,
           );
         }
 
@@ -150,6 +147,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }),
     );
   }
+
+
 
   void showBottomSheetDialog() {
     showModalBottomSheet(
@@ -198,8 +197,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       maxWidth: 512,
     );
 
-    if (xFile != null) {
-      file = xFile;
+    if (xFile != null && context.mounted) {
+      context.read<UserDataCubit>().updateCurrentUserField(
+            fieldKey: UserFieldKeys.avatar,
+            value: xFile.path,
+          );
     }
   }
 
@@ -209,8 +211,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       maxHeight: 512,
       maxWidth: 512,
     );
-    if (xFile != null) {
-      file = xFile;
+    if (xFile != null && context.mounted) {
+      context.read<UserDataCubit>().updateCurrentUserField(
+            fieldKey: UserFieldKeys.avatar,
+            value: xFile.path,
+          );
     }
   }
 }
