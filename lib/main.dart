@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/tab/tab_cubit.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
+import 'package:joyla/cubits/website/website_cubit.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/network/api_service.dart';
 import 'package:joyla/data/repositories/auth_repository.dart';
+import 'package:joyla/data/repositories/profile_repository.dart';
+import 'package:joyla/data/repositories/website_repository.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/utils/theme.dart';
 
@@ -29,6 +33,12 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider(
           create: (context) => AuthRepository(apiService: apiService),
+        ),
+        RepositoryProvider(
+          create: (context) => ProfileRepository(apiService: apiService),
+        ),
+        RepositoryProvider(
+          create: (context) => WebsiteRepository(apiService: apiService),
         )
       ],
       child: MultiBlocProvider(
@@ -39,7 +49,13 @@ class App extends StatelessWidget {
             ),
           ),
           BlocProvider(create: (context) => TabCubit()),
-          BlocProvider(create: (context) => UserDataCubit())
+          BlocProvider(create: (context) => UserDataCubit()),
+          BlocProvider(
+              create: (context) => ProfileCubit(
+                  profileRepository: context.read<ProfileRepository>())),
+          BlocProvider(
+              create: (context) => WebsiteCubit(
+                  websiteRepository: context.read<WebsiteRepository>())),
         ],
         child: const MyApp(),
       ),

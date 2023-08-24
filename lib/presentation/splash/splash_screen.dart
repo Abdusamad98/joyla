@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/presentation/app_routes.dart';
 
@@ -43,7 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
           }
           if (state is AuthLoggedState) {
+            BlocProvider.of<ProfileCubit>(context).getUserData();
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
+
           }
         },
       ),

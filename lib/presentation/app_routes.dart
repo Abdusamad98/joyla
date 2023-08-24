@@ -5,6 +5,7 @@ import 'package:joyla/presentation/auth/pages/login_screen.dart';
 import 'package:joyla/presentation/auth/pages/register_screen.dart';
 import 'package:joyla/presentation/splash/splash_screen.dart';
 import 'package:joyla/presentation/tab/tab_box.dart';
+import 'package:joyla/presentation/tab/websites/sub_screens/add_website_screen.dart';
 
 class RouteNames {
   static const String splashScreen = "/";
@@ -12,6 +13,7 @@ class RouteNames {
   static const String registerScreen = "/register_screen";
   static const String tabBox = "/tab_box";
   static const String confirmGmail = "/confirm_gmail";
+  static const String addWebsite = "/add_website";
 }
 
 class AppRoutes {
@@ -31,6 +33,9 @@ class AppRoutes {
 
       case RouteNames.tabBox:
         return MaterialPageRoute(builder: (context) => TabBox());
+
+      case RouteNames.addWebsite:
+        return MaterialPageRoute(builder: (context) => AddWebsiteScreen());
 
       case RouteNames.confirmGmail:
         return MaterialPageRoute(

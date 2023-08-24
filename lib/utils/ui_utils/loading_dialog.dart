@@ -26,6 +26,6 @@ void showLoading({required BuildContext context}) {
   );
 }
 
-void hideLoading({required BuildContext? dialogContext}) async {
-  if (dialogContext != null) Navigator.pop(dialogContext);
+void hideLoading({required BuildContext? context}) async {
+  if (context != null) Navigator.pop(context);
 }

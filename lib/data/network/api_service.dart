@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
+import 'package:joyla/data/models/websites/website_model.dart';
 import 'package:joyla/utils/constants/constants.dart';
 
 class ApiService {
@@ -34,7 +36,8 @@ class ApiService {
         },
         onRequest: (requestOptions, handler) async {
           debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
-          // return handler.resolve(Response(requestOptions: requestOptions, data: {"name": "ali", "age": 26}));
+          requestOptions.headers
+              .addAll({"token": StorageRepository.getString("token")});
           return handler.next(requestOptions);
         },
         onResponse: (response, handler) async {
@@ -99,9 +102,7 @@ class ApiService {
     }
   }
 
-  Future<UniversalData> registerUser({
-    required UserModel userModel
-  }) async {
+  Future<UniversalData> registerUser({required UserModel userModel}) async {
     Response response;
     _dio.options.headers = {
       "Accept": "multipart/form-data",
@@ -155,42 +156,99 @@ class ApiService {
     }
   }
 
-// Future<UniversalData> uploadImage({required XFile file}) async {
-//   Uri uri = Uri.https(
-//     "bozormedia.uz",
-//     "/services/mobile-seller/api/client-image-upload",
-//   );
-//   String fileName = file.path.split('/').last;
-//
-//   var request = http.MultipartRequest('POST', uri);
-//   try {
-//     request.headers.addAll({
-//       "Accept": "multipart/form-data",
-//       "Authorization": token,
-//     });
-//     request.files.add(
-//       await http.MultipartFile.fromPath(
-//         "image",
-//         file.path,
-//         filename: fileName,
-//       ).timeout(const Duration(seconds: 30)),
-//     );
-//
-//     var response = await request.send();
-//     debugPrint('${uri.path} :${response.statusCode}');
-//
-//     if (response.statusCode == HttpStatus.ok) {
-//       var responseString = await response.stream.bytesToString();
-//       var result = jsonDecode(responseString);
-//       return UniversalData(data: result['url']);
-//     }
-//     return UniversalData(error: response.statusCode.toString());
-//   } on SocketException {
-//     return UniversalData(error: "Internet Error!");
-//   } on FormatException {
-//     return UniversalData(error: "Format Error!");
-//   } catch (err) {
-//     return UniversalData(error: err.toString());
-//   }
-// }
+// - --------------- PROFILE -----------------
+
+  Future<UniversalData> getProfileData() async {
+    Response response;
+    try {
+      response = await _dio.get('/users');
+
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(data: UserModel.fromJson(response.data["data"]));
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
+
+  // -------------- WEBSITES ------------------------
+
+  Future<UniversalData> createWebsite(
+      {required WebsiteModel websiteModel}) async {
+    Response response;
+    _dio.options.headers = {
+      "Accept": "multipart/form-data",
+    };
+    try {
+      response = await _dio.post(
+        '/sites',
+        data: await websiteModel.getFormData(),
+      );
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(data: response.data["data"]);
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
+
+  Future<UniversalData> getWebsites() async {
+    Response response;
+    try {
+      response = await _dio.get('/sites');
+
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(
+          data: (response.data["data"] as List?)
+                  ?.map((e) => WebsiteModel.fromJson(e))
+                  .toList() ??
+              [],
+        );
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
+
+  Future<UniversalData> getWebsiteById(int id) async {
+    Response response;
+    try {
+      response = await _dio.get('/sites/$id');
+
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(
+            data: WebsiteModel.fromJson(response.data["data"]));
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
 import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/presentation/app_routes.dart';
@@ -61,6 +62,7 @@ class _GmailConfirmScreenState extends State<GmailConfirmScreen> {
 
           if (state is AuthLoggedState) {
             context.read<UserDataCubit>().clearData();
+            BlocProvider.of<ProfileCubit>(context).getUserData();
             Navigator.pushNamedAndRemoveUntil(
                 context, RouteNames.tabBox, (c) => false);
           }
