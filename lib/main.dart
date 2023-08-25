@@ -5,7 +5,8 @@ import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/tab/tab_cubit.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
-import 'package:joyla/cubits/website/website_cubit.dart';
+import 'package:joyla/cubits/website_add/website_add_cubit.dart';
+import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/network/api_service.dart';
 import 'package:joyla/data/repositories/auth_repository.dart';
@@ -54,8 +55,13 @@ class App extends StatelessWidget {
               create: (context) => ProfileCubit(
                   profileRepository: context.read<ProfileRepository>())),
           BlocProvider(
-              create: (context) => WebsiteCubit(
-                  websiteRepository: context.read<WebsiteRepository>())),
+            create: (context) => WebsiteAddCubit(
+                websiteRepository: context.read<WebsiteRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => WebsiteFetchCubit(
+                websiteRepository: context.read<WebsiteRepository>()),
+          ),
         ],
         child: const MyApp(),
       ),

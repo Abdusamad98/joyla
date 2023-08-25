@@ -12,3 +12,10 @@ class TimeOutConstants {
 }
 
 const String token = "";
+
+
+class StatusTextConstants {
+  static String websiteAdd = "website_add";
+  static String gotAllWebsite = "got_all_website";
+  static String gotWebsiteById = "got_website_by_id";
+}

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:joyla/cubits/auth/auth_cubit.dart';
-import 'package:joyla/cubits/website/website_cubit.dart';
+import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
 import 'package:joyla/data/models/status/form_status.dart';
 import 'package:joyla/data/models/websites/website_model.dart';
-import 'package:joyla/data/repositories/auth_repository.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
-import 'package:joyla/utils/ui_utils/loading_dialog.dart';
 
 class WebsitesScreen extends StatefulWidget {
   const WebsitesScreen({super.key});
@@ -25,14 +22,14 @@ class _WebsitesScreenState extends State<WebsitesScreen> {
 
   _init() async {
     Future.microtask(
-        () => BlocProvider.of<WebsiteCubit>(context).getWebsites(context));
+        () => BlocProvider.of<WebsiteFetchCubit>(context).getWebsites(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Articles screen"),
+        title: const Text("Websites screen"),
         actions: [
           IconButton(
             onPressed: () {
@@ -42,13 +39,19 @@ class _WebsitesScreenState extends State<WebsitesScreen> {
           )
         ],
       ),
-      body: BlocConsumer<WebsiteCubit, WebsiteState>(
+      body: BlocConsumer<WebsiteFetchCubit, WebsiteFetchState>(
         builder: (context, state) {
           return ListView(
             children: [
               ...List.generate(state.websites.length, (index) {
                 WebsiteModel website = state.websites[index];
                 return ListTile(
+                  onTap: () {
+                    context
+                        .read<WebsiteFetchCubit>()
+                        .getWebsiteById(website.id);
+                    Navigator.pushNamed(context, RouteNames.websiteDetail);
+                  },
                   title: Text(
                     website.name,
                     style: const TextStyle(
@@ -67,9 +70,6 @@ class _WebsitesScreenState extends State<WebsitesScreen> {
               message: state.statusText,
               context: context,
             );
-          }
-          if (state.statusText == "website_added") {
-            BlocProvider.of<WebsiteCubit>(context).getWebsites(context);
           }
         },
       ),

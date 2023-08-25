@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joyla/cubits/website/website_cubit.dart';
+import 'package:joyla/cubits/website_add/website_add_cubit.dart';
+import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
+import 'package:joyla/data/models/status/form_status.dart';
 import 'package:joyla/data/models/websites/website_field_keys.dart';
+import 'package:joyla/presentation/auth/widgets/global_button.dart';
+import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
 import 'package:joyla/utils/colors/app_colors.dart';
+import 'package:joyla/utils/constants/constants.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
 
 class AddWebsiteScreen extends StatefulWidget {
@@ -14,16 +19,7 @@ class AddWebsiteScreen extends StatefulWidget {
 }
 
 class _AddWebsiteScreenState extends State<AddWebsiteScreen> {
-
   ImagePicker picker = ImagePicker();
-
-  late WebsiteCubit bloc ;
-
-  @override
-  void initState() {
-   bloc = BlocProvider.of<WebsiteCubit>(context);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,55 +27,124 @@ class _AddWebsiteScreenState extends State<AddWebsiteScreen> {
       appBar: AppBar(
         title: const Text("Add Website "),
       ),
-      body: ListView(
-        children: [
+      body: BlocConsumer<WebsiteAddCubit, WebsiteAddState>(
+        builder: (context, state) {
+          return ListView(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            children: [
+              const SizedBox(
+                width: double.infinity,
+                child: Text(
+                  "Add Website",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25,
+                      color: Colors.black),
+                ),
+              ),
+              GlobalTextField(
+                hintText: "LINK",
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                onChanged: (v) {
+                  context.read<WebsiteAddCubit>().updateWebsiteField(
+                        fieldKey: WebsiteFieldKeys.link,
+                        value: v,
+                      );
+                },
+              ),
+              GlobalTextField(
+                hintText: "NAME",
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                onChanged: (v) {
+                  context.read<WebsiteAddCubit>().updateWebsiteField(
+                        fieldKey: WebsiteFieldKeys.name,
+                        value: v,
+                      );
+                },
+              ),
+              GlobalTextField(
+                hintText: "AUTHOR",
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                onChanged: (v) {
+                  context.read<WebsiteAddCubit>().updateWebsiteField(
+                        fieldKey: WebsiteFieldKeys.author,
+                        value: v,
+                      );
+                },
+              ),
+              GlobalTextField(
+                hintText: "CONTACT",
+                keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                onChanged: (v) {
+                  context.read<WebsiteAddCubit>().updateWebsiteField(
+                        fieldKey: WebsiteFieldKeys.contact,
+                        value: v,
+                      );
+                },
+              ),
+              GlobalTextField(
+                hintText: "HASHTAG",
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                textAlign: TextAlign.start,
+                onChanged: (v) {
+                  context.read<WebsiteAddCubit>().updateWebsiteField(
+                        fieldKey: WebsiteFieldKeys.hashtag,
+                        value: "#$v",
+                      );
+                },
+              ),
+              TextButton(
+                onPressed: () {
+                  showBottomSheetDialog();
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text("Select Image"), Icon(Icons.image)],
+                ),
+              ),
+              const SizedBox(height: 20),
+              GlobalButton(
+                title: "Add Website",
+                onTap: () {
+                  if (context.read<WebsiteAddCubit>().state.canAddWebsite()) {
+                    context.read<WebsiteAddCubit>().createWebsite(context);
+                  } else {
+                    showErrorMessage(
+                        message: "Ma'lumotlar to'liq emas!!!",
+                        context: context);
+                  }
+                },
+              )
+            ],
+          );
+        },
+        listener: (context, state) {
+          if (state.status == FormStatus.failure) {
+            showErrorMessage(
+              message: state.statusText,
+              context: context,
+            );
+          }
 
-          IconButton(
-          onPressed: () {
-            showBottomSheetDialog();
-          },
-          icon:const  Icon(Icons.image),
-          ),
-          IconButton(
-            onPressed: () {
-              bloc.updateWebsiteField(
-                fieldKey: WebsiteFieldKeys.link,
-                value: "https://daryo.uz",
-              );
-              bloc.updateWebsiteField(
-                fieldKey: WebsiteFieldKeys.name,
-                value: "Daryo website",
-              );
-              bloc.updateWebsiteField(
-                fieldKey: WebsiteFieldKeys.author,
-                value: "Daryochilar",
-              );
-              bloc.updateWebsiteField(
-                fieldKey: WebsiteFieldKeys.contact,
-                value: "999090900",
-              );
-              bloc.updateWebsiteField(
-                fieldKey: WebsiteFieldKeys.hashtag,
-                value: "daryo, yangilik",
-              );
-
-
-
-              if (bloc.state.canAddWebsite()) {
-                //showErrorMessage(message: "Yaroqli!!!", context: context);
-                bloc.createWebsite();
-              } else {
-                showErrorMessage(
-                    message: "Ma'lumotlar to'liq emas!!!", context: context);
-              }
-            },
-            icon: const Icon(Icons.add),
-          )
-        ],
+          if (state.status == FormStatus.success &&
+              state.statusText == StatusTextConstants.websiteAdd) {
+            BlocProvider.of<WebsiteFetchCubit>(context).getWebsites(context);
+            Navigator.pop(context);
+          }
+        },
       ),
     );
   }
-
 
   void showBottomSheetDialog() {
     showModalBottomSheet(
@@ -129,7 +194,7 @@ class _AddWebsiteScreenState extends State<AddWebsiteScreen> {
     );
 
     if (xFile != null && context.mounted) {
-      bloc.updateWebsiteField(
+      BlocProvider.of<WebsiteAddCubit>(context).updateWebsiteField(
         fieldKey: WebsiteFieldKeys.image,
         value: xFile.path,
       );
@@ -143,7 +208,7 @@ class _AddWebsiteScreenState extends State<AddWebsiteScreen> {
       maxWidth: 512,
     );
     if (xFile != null && context.mounted) {
-      bloc.updateWebsiteField(
+      BlocProvider.of<WebsiteAddCubit>(context).updateWebsiteField(
         fieldKey: WebsiteFieldKeys.image,
         value: xFile.path,
       );

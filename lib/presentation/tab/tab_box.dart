@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/tab/tab_cubit.dart';
 import 'package:joyla/presentation/app_routes.dart';
+import 'package:joyla/presentation/tab/articles/articles_screen.dart';
 import 'package:joyla/presentation/tab/websites/websites_screen.dart';
 import 'package:joyla/presentation/tab/profile/profile_screen.dart';
 
@@ -19,8 +20,9 @@ class _TabBoxState extends State<TabBox> {
   @override
   void initState() {
     screens = [
-      WebsitesScreen(),
-      ProfileScreen(),
+      const WebsitesScreen(),
+      const ArticlesScreen(),
+      const ProfileScreen(),
     ];
 
     super.initState();
@@ -30,7 +32,10 @@ class _TabBoxState extends State<TabBox> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<AuthCubit, AuthState>(
-        child: screens[context.watch<TabCubit>().state],
+        child: IndexedStack(
+          index: context.watch<TabCubit>().state,
+          children: screens,
+        ),
         listener: (context, state) {
           if (state is AuthUnAuthenticatedState) {
             Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
@@ -39,7 +44,8 @@ class _TabBoxState extends State<TabBox> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.web), label: "Article"),
+          BottomNavigationBarItem(icon: Icon(Icons.web), label: "Websites"),
+          BottomNavigationBarItem(icon: Icon(Icons.article), label: "Articles"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
         currentIndex: context.watch<TabCubit>().state,

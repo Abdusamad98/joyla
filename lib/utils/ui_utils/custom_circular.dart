@@ -11,7 +11,7 @@ class CustomCircularProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (strokeWidth == 4.0 || strokeWidth == null) {
+    if (strokeWidth == 3.0 || strokeWidth == null) {
       return CircularProgressIndicator(
         strokeWidth: 2,
         valueColor: AlwaysStoppedAnimation<Color>(AppColors.c_3669C9),

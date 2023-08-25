@@ -25,8 +25,9 @@ class GlobalTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 25.w),
+      margin: EdgeInsets.symmetric(horizontal: 25.w,vertical: 12),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
         color: Colors.white,
           boxShadow: [
             BoxShadow(
