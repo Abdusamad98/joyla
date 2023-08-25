@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
@@ -10,7 +11,19 @@ import 'package:joyla/utils/constants/constants.dart';
 class ApiService {
   // DIO SETTINGS
 
-  final _dio = Dio(
+  final _dioSecure = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      connectTimeout: Duration(seconds: TimeOutConstants.connectTimeout),
+      receiveTimeout: Duration(seconds: TimeOutConstants.receiveTimeout),
+      sendTimeout: Duration(seconds: TimeOutConstants.sendTimeout),
+    ),
+  );
+
+  final _dioOpen = Dio(
     BaseOptions(
       baseUrl: baseUrl,
       headers: {
@@ -27,7 +40,7 @@ class ApiService {
   }
 
   _init() {
-    _dio.interceptors.add(
+    _dioSecure.interceptors.add(
       InterceptorsWrapper(
         onError: (error, handler) async {
           //error.response.statusCode
@@ -46,6 +59,24 @@ class ApiService {
         },
       ),
     );
+
+    _dioOpen.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) async {
+          //error.response.statusCode
+          debugPrint("ERRORGA KIRDI:${error.message} and ${error.response}");
+          return handler.next(error);
+        },
+        onRequest: (requestOptions, handler) async {
+          debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
+          return handler.next(requestOptions);
+        },
+        onResponse: (response, handler) async {
+          debugPrint("JAVOB  KELDI :${response.requestOptions.path}");
+          return handler.next(response);
+        },
+      ),
+    );
   }
 
   //----------------------- AUTHENTICATION -------------------------
@@ -56,7 +87,7 @@ class ApiService {
   }) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/gmail',
         data: {
           "gmail": gmail,
@@ -69,11 +100,7 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -82,7 +109,7 @@ class ApiService {
   Future<UniversalData> confirmCode({required String code}) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/password',
         data: {"checkPass": code},
       );
@@ -92,11 +119,7 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -104,11 +127,11 @@ class ApiService {
 
   Future<UniversalData> registerUser({required UserModel userModel}) async {
     Response response;
-    _dio.options.headers = {
+    _dioSecure.options.headers = {
       "Accept": "multipart/form-data",
     };
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/register',
         data: await userModel.getFormData(),
       );
@@ -117,11 +140,7 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -133,7 +152,7 @@ class ApiService {
   }) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/login',
         data: {
           "gmail": gmail,
@@ -146,11 +165,7 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -161,18 +176,14 @@ class ApiService {
   Future<UniversalData> getProfileData() async {
     Response response;
     try {
-      response = await _dio.get('/users');
+      response = await _dioSecure.get('/users');
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
         return UniversalData(data: UserModel.fromJson(response.data["data"]));
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -183,11 +194,11 @@ class ApiService {
   Future<UniversalData> createWebsite(
       {required WebsiteModel websiteModel}) async {
     Response response;
-    _dio.options.headers = {
+    _dioSecure.options.headers = {
       "Accept": "multipart/form-data",
     };
     try {
-      response = await _dio.post(
+      response = await _dioSecure.post(
         '/sites',
         data: await websiteModel.getFormData(),
       );
@@ -195,12 +206,10 @@ class ApiService {
         return UniversalData(data: response.data["data"]);
       }
       return UniversalData(error: "Other Error");
+    } on SocketException catch (e) {
+      return UniversalData(error: e.toString());
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -209,7 +218,7 @@ class ApiService {
   Future<UniversalData> getWebsites() async {
     Response response;
     try {
-      response = await _dio.get('/sites');
+      response = await _dioOpen.get('/sites');
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
         return UniversalData(
@@ -221,11 +230,7 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
@@ -234,7 +239,7 @@ class ApiService {
   Future<UniversalData> getWebsiteById(int id) async {
     Response response;
     try {
-      response = await _dio.get('/sites/$id');
+      response = await _dioOpen.get('/sites/$id');
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
         return UniversalData(
@@ -242,13 +247,50 @@ class ApiService {
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
+      return getDioCustomError(e);
     } catch (error) {
       return UniversalData(error: error.toString());
     }
+  }
+}
+
+UniversalData getDioCustomError(DioException exception) {
+  debugPrint("DIO ERROR TYPE: ${exception.type}");
+  if (exception.response != null) {
+    return UniversalData(error: exception.response!.data["message"]);
+  }
+  switch (exception.type) {
+    case DioExceptionType.sendTimeout:
+      {
+        return UniversalData(error: "sendTimeout");
+      }
+    case DioExceptionType.receiveTimeout:
+      {
+        return UniversalData(error: "receiveTimeout");
+      }
+    case DioExceptionType.cancel:
+      {
+        return UniversalData(error: "cancel");
+      }
+    case DioExceptionType.badCertificate:
+      {
+        return UniversalData(error: "badCertificate");
+      }
+    case DioExceptionType.badResponse:
+      {
+        return UniversalData(error: "badResponse");
+      }
+    case DioExceptionType.connectionError:
+      {
+        return UniversalData(error: "connectionError");
+      }
+    case DioExceptionType.connectionTimeout:
+      {
+        return UniversalData(error: "connectionTimeout");
+      }
+    default:
+      {
+        return UniversalData(error: "unknown");
+      }
   }
 }

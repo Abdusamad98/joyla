@@ -42,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
           }
           if (state is AuthLoggedState) {
-            BlocProvider.of<ProfileCubit>(context).getUserData();
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
 
           }

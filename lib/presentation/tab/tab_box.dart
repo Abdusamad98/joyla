@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
+import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/tab/tab_cubit.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/tab/articles/articles_screen.dart';
@@ -19,6 +20,8 @@ class _TabBoxState extends State<TabBox> {
 
   @override
   void initState() {
+    BlocProvider.of<ProfileCubit>(context).getUserData();
+
     screens = [
       const WebsitesScreen(),
       const ArticlesScreen(),

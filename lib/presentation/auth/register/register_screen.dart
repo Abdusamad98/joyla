@@ -27,7 +27,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text("Sign Up Page"),
       ),
-      body: BlocConsumer<AuthCubit, AuthState>(builder: (context, state) {
+      body: BlocConsumer<AuthCubit, AuthState>(
+          builder: (context, state) {
         if (state is AuthLoadingState) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -132,7 +133,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: const Text("Select image"))
           ],
         );
-      }, listener: (context, state) {
+      },
+          listener: (context, state) {
         if (state is AuthSendCodeSuccessState) {
           Navigator.pushNamed(
             context,

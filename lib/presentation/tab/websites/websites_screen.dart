@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
 import 'package:joyla/data/models/status/form_status.dart';
 import 'package:joyla/data/models/websites/website_model.dart';
@@ -60,7 +61,7 @@ class _WebsitesScreenState extends State<WebsitesScreen> {
                   ),
                   subtitle: Text(website.link),
                 );
-              })
+              }),
             ],
           );
         },

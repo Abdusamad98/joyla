@@ -16,20 +16,24 @@ class WebsiteFetchCubit extends Cubit<WebsiteFetchState> {
 
   final WebsiteRepository websiteRepository;
 
-
   getWebsites(BuildContext context) async {
-    emit(state.copyWith(
-      status: FormStatus.loading,
-      statusText: "",
-    ));
+    emit(
+      state.copyWith(
+        status: FormStatus.loading,
+        statusText: "",
+      ),
+    );
     showLoading(context: context);
     UniversalData response = await websiteRepository.getWebsites();
-    if (context.mounted) hideLoading(context: context);
+    if (context.mounted) {
+      print("HIDING...");
+      hideLoading(context: context);
+    }
     if (response.error.isEmpty) {
       emit(
         state.copyWith(
           status: FormStatus.success,
-          statusText:StatusTextConstants.gotAllWebsite,
+          statusText: StatusTextConstants.gotAllWebsite,
           websites: response.data as List<WebsiteModel>,
         ),
       );
