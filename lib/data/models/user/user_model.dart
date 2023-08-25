@@ -82,7 +82,7 @@ class UserModel {
       "password": password,
       "profession": profession,
       "gender": gender,
-      "avatar": await MultipartFile.fromFile(file.path, filename: fileName),
+      "file": await MultipartFile.fromFile(file.path, filename: fileName),
     });
   }
 
