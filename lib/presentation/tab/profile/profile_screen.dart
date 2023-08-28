@@ -56,31 +56,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ListTile(
                   title: Text(
                     state.userModel.username,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   subtitle: Text(
                     state.userModel.email,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 ListTile(
                   title: Text(
                     state.userModel.role,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   subtitle: Text(
                     state.userModel.contact,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 ListTile(
                   title: Text(
                     state.userModel.id.toString(),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   subtitle: Text(
                     state.userModel.gender,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ],

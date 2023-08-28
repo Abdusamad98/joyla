@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
+import 'package:flutter/material.dart';
 import 'package:joyla/data/repositories/profile_repository.dart';
-import 'package:meta/meta.dart';
 
 part 'profile_state.dart';
 

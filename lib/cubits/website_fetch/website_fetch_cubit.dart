@@ -26,7 +26,6 @@ class WebsiteFetchCubit extends Cubit<WebsiteFetchState> {
     showLoading(context: context);
     UniversalData response = await websiteRepository.getWebsites();
     if (context.mounted) {
-      print("HIDING...");
       hideLoading(context: context);
     }
     if (response.error.isEmpty) {

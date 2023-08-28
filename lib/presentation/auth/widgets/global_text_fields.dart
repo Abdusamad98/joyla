@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:joyla/utils/colors/app_colors.dart';
 
 class GlobalTextField extends StatelessWidget {
-  GlobalTextField({
+  const GlobalTextField({
     Key? key,
     required this.hintText,
     required this.keyboardType,
@@ -15,9 +15,9 @@ class GlobalTextField extends StatelessWidget {
   }) : super(key: key);
 
   final String hintText;
-  TextInputType keyboardType;
-  TextInputAction textInputAction;
-  TextAlign textAlign;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final TextAlign textAlign;
   final bool obscureText;
   final ValueChanged<String> onChanged;
   final int maxLine;
@@ -38,7 +38,7 @@ class GlobalTextField extends StatelessWidget {
           ]
       ),
       child: TextField(
-        cursorColor: Color(0xFF4F8962),
+        cursorColor: const Color(0xFF4F8962),
         maxLines: maxLine,
         style: TextStyle(
             fontSize: 20,

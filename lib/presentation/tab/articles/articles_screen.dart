@@ -12,7 +12,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Articles"),
+        title: const Text("Articles"),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
       ),
     );

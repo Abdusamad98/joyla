@@ -10,9 +10,9 @@ import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
 
 class GmailConfirmScreen extends StatefulWidget {
-  GmailConfirmScreen({super.key, required this.userModel});
+const  GmailConfirmScreen({super.key, required this.userModel});
 
-  UserModel userModel;
+ final UserModel userModel;
 
   @override
   State<GmailConfirmScreen> createState() => _GmailConfirmScreenState();

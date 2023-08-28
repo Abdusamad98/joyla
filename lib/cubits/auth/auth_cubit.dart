@@ -1,10 +1,9 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/data/repositories/auth_repository.dart';
-import 'package:meta/meta.dart';
 
 part 'auth_state.dart';
 
