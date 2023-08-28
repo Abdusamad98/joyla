@@ -2,18 +2,23 @@ import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/data/models/websites/website_model.dart';
-import 'package:joyla/data/network/api_service.dart';
+import 'package:joyla/data/network/open_api_service.dart';
+import 'package:joyla/data/network/secure_api_service.dart';
 
 class WebsiteRepository {
-  final ApiService apiService;
+  final SecureApiService secureApiService;
+  final OpenApiService openApiService;
 
-  WebsiteRepository({required this.apiService});
+  WebsiteRepository({
+    required this.secureApiService,
+    required this.openApiService,
+  });
 
-  Future<UniversalData> getWebsites() async => apiService.getWebsites();
+  Future<UniversalData> getWebsites() async => openApiService.getWebsites();
 
   Future<UniversalData> getWebsiteById(int websiteId) async =>
-      apiService.getWebsiteById(websiteId);
+      openApiService.getWebsiteById(websiteId);
 
   Future<UniversalData> createWebsite(WebsiteModel newWebsite) async =>
-      apiService.createWebsite(websiteModel: newWebsite);
+      secureApiService.createWebsite(websiteModel: newWebsite);
 }

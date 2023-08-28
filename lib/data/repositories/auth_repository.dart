@@ -1,33 +1,33 @@
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
-import 'package:joyla/data/network/api_service.dart';
+import 'package:joyla/data/network/open_api_service.dart';
 
 class AuthRepository {
-  final ApiService apiService;
+  final OpenApiService openApiService;
 
-  AuthRepository({required this.apiService});
+  AuthRepository({required this.openApiService});
 
   Future<UniversalData> sendCodeToGmail({
     required String gmail,
     required String password,
   }) async =>
-      apiService.sendCodeToGmail(
+      openApiService.sendCodeToGmail(
         gmail: gmail,
         password: password,
       );
 
   Future<UniversalData> confirmCode({required String code}) async =>
-      apiService.confirmCode(code: code);
+      openApiService.confirmCode(code: code);
 
   Future<UniversalData> registerUser({required UserModel userModel}) async =>
-      apiService.registerUser(userModel: userModel);
+      openApiService.registerUser(userModel: userModel);
 
   Future<UniversalData> loginUser({
     required String gmail,
     required String password,
   }) async =>
-      apiService.loginUser(
+      openApiService.loginUser(
         gmail: gmail,
         password: password,
       );

@@ -27,9 +27,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text("Sign Up Page"),
       ),
-      body: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, state) {
-        if (state is AuthLoadingState) {
+      body: BlocConsumer<AuthCubit, AuthState>(builder: (context, state) {
+        if ((state is AuthLoadingState) || (state is AuthSendCodeSuccessState)) {
           return const Center(child: CircularProgressIndicator());
         }
         return ListView(
@@ -122,8 +121,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               .userModel
                               .password,
                         );
-                  }else{
-                    showErrorMessage(message: "Maydonlar to'liq emas", context: context);
+                  } else {
+                    showErrorMessage(
+                        message: "Maydonlar to'liq emas", context: context);
                   }
                 }),
             TextButton(
@@ -133,8 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: const Text("Select image"))
           ],
         );
-      },
-          listener: (context, state) {
+      }, listener: (context, state) {
         if (state is AuthSendCodeSuccessState) {
           Navigator.pushNamed(
             context,
@@ -149,8 +148,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }),
     );
   }
-
-
 
   void showBottomSheetDialog() {
     showModalBottomSheet(

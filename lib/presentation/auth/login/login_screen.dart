@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         builder: (context, state) {
-          if (state is AuthLoadingState) {
+          if ((state is AuthLoadingState)||(state is AuthLoggedState)) {
             return const Center(child: CircularProgressIndicator());
           }
           return ListView(
@@ -67,8 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, RouteNames.registerScreen);
+                  Navigator.pushReplacementNamed(context, RouteNames.registerScreen);
                 },
                 child: const Text(
                   "Sign Up",
@@ -81,18 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           );
         },
-        // buildWhen: (previous,current){
-        //   return previous!=current;//false
-        // },
-        buildWhen: (previous,current){
-          print("PREVIOUS:$previous AND CURRENT:$current");
-          return true;
-        },
         listener: (context, state) {
           if (state is AuthLoggedState) {
             Navigator.pushReplacementNamed(context, RouteNames.tabBox);
           }
-
           if (state is AuthErrorState) {
             showErrorMessage(message: state.errorText, context: context);
           }

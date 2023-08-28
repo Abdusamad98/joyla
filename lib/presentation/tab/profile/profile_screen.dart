@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/profile/profile_cubit.dart';
+import 'package:joyla/data/repositories/auth_repository.dart';
 import 'package:joyla/utils/constants/constants.dart';
 import 'package:joyla/utils/ui_utils/custom_circular.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
@@ -14,6 +15,19 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+
+
+  @override
+  void initState() {
+  AuthRepository authRepository =  RepositoryProvider.of<AuthRepository>(context);
+
+  authRepository.getToken();
+
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: BlocConsumer<ProfileCubit, ProfileState>(
         builder: (context, state) {
           if (state is ProfileLoadingState) {
-            return const CustomCircularProgressIndicator();
+            return const Center(child: CustomCircularProgressIndicator());
           }
           if (state is ProfileSuccessState) {
             return Column(

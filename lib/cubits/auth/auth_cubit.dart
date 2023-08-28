@@ -69,7 +69,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
     if (universalData.error.isEmpty) {
       debugPrint("TOKEN${universalData.data}");
-      authRepository.setToken(universalData.data as String);
+      await authRepository.setToken(universalData.data as String);
       emit(AuthLoggedState());
     } else {
       emit(AuthErrorState(errorText: universalData.error));
@@ -84,9 +84,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-
-  updateState(){
+  updateState() {
     emit(AuthInitial());
   }
-
 }

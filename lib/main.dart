@@ -8,7 +8,8 @@ import 'package:joyla/cubits/user_data/user_data_cubit.dart';
 import 'package:joyla/cubits/website_add/website_add_cubit.dart';
 import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
 import 'package:joyla/data/local/storage_repository.dart';
-import 'package:joyla/data/network/api_service.dart';
+import 'package:joyla/data/network/open_api_service.dart';
+import 'package:joyla/data/network/secure_api_service.dart';
 import 'package:joyla/data/repositories/auth_repository.dart';
 import 'package:joyla/data/repositories/profile_repository.dart';
 import 'package:joyla/data/repositories/website_repository.dart';
@@ -20,27 +21,40 @@ Future<void> main() async {
 
   await StorageRepository.getInstance();
 
-  runApp(App(apiService: ApiService()));
+  runApp(App(
+    secureApiService: SecureApiService(),
+    openApiService: OpenApiService(),
+  ));
 }
 
 class App extends StatelessWidget {
-  const App({super.key, required this.apiService});
+  const App({
+    super.key,
+    required this.secureApiService,
+    required this.openApiService,
+  });
 
-  final ApiService apiService;
+  final SecureApiService secureApiService;
+  final OpenApiService openApiService;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
-          create: (context) => AuthRepository(apiService: apiService),
+          create: (context) => AuthRepository(
+            openApiService: openApiService,
+          ),
         ),
         RepositoryProvider(
-          create: (context) => ProfileRepository(apiService: apiService),
+          create: (context) => ProfileRepository(apiService: secureApiService),
         ),
         RepositoryProvider(
-          create: (context) => WebsiteRepository(apiService: apiService),
-        )
+          create: (context) => WebsiteRepository(
+            secureApiService: secureApiService,
+            openApiService: openApiService,
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
