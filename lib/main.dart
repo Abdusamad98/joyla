@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:joyla/blocs/articles/article_bloc.dart';
+import 'package:joyla/blocs/articles/article_event.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/tab/tab_cubit.dart';
@@ -10,6 +12,7 @@ import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
 import 'package:joyla/data/local/storage_repository.dart';
 import 'package:joyla/data/network/open_api_service.dart';
 import 'package:joyla/data/network/secure_api_service.dart';
+import 'package:joyla/data/repositories/article_repository.dart';
 import 'package:joyla/data/repositories/auth_repository.dart';
 import 'package:joyla/data/repositories/profile_repository.dart';
 import 'package:joyla/data/repositories/website_repository.dart';
@@ -55,6 +58,12 @@ class App extends StatelessWidget {
             openApiService: openApiService,
           ),
         ),
+        RepositoryProvider(
+          create: (context) => ArticleRepository(
+            secureApiService: secureApiService,
+            openApiService: openApiService,
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -63,6 +72,9 @@ class App extends StatelessWidget {
               authRepository: context.read<AuthRepository>(),
             ),
           ),
+          BlocProvider(
+              create: (context) => ArticleBloc(
+                  articleRepository: context.read<ArticleRepository>())),
           BlocProvider(create: (context) => TabCubit()),
           BlocProvider(create: (context) => UserDataCubit()),
           BlocProvider(

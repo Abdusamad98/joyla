@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:joyla/data/models/articles/article_model.dart';
 import 'package:joyla/data/models/universal_data.dart';
 import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/data/models/websites/website_model.dart';
@@ -8,8 +9,6 @@ import 'package:joyla/utils/utililty_functions/utility_functions.dart';
 
 class OpenApiService {
   // DIO SETTINGS
-
-
 
   final _dioOpen = Dio(
     BaseOptions(
@@ -141,7 +140,6 @@ class OpenApiService {
 
   // -------------- WEBSITES ------------------------
 
-
   Future<UniversalData> getWebsites() async {
     Response response;
     try {
@@ -179,6 +177,25 @@ class OpenApiService {
       return UniversalData(error: error.toString());
     }
   }
+
+  Future<UniversalData> getArticles() async {
+    Response response;
+    try {
+      response = await _dioOpen.get('/articles');
+
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(
+          data: (response.data["data"] as List?)
+                  ?.map((e) => ArticleModel.fromJson(e))
+                  .toList() ??
+              [],
+        );
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      return getDioCustomError(e);
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
 }
-
-
