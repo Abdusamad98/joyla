@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:joyla/data/models/universal_data.dart';
+
+import '../../models/universal_data.dart';
 
 UniversalData getDioCustomError(DioException exception) {
   debugPrint("DIO ERROR TYPE: ${exception.type}");

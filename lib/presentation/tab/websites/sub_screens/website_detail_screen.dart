@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
-import 'package:joyla/data/models/status/form_status.dart';
+
 import 'package:joyla/utils/constants/constants.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
+import 'package:network_side/models/status/form_status.dart';
 
 class WebsiteDetailScreen extends StatelessWidget {
   const WebsiteDetailScreen({super.key});

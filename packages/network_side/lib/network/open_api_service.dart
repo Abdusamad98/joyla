@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:joyla/data/models/articles/article_model.dart';
-import 'package:joyla/data/models/universal_data.dart';
-import 'package:joyla/data/models/user/user_model.dart';
-import 'package:joyla/data/models/websites/website_model.dart';
-import 'package:joyla/utils/constants/constants.dart';
-import 'package:joyla/utils/utililty_functions/utility_functions.dart';
+import '../models/articles/article_model.dart';
+import '../models/universal_data.dart';
+import '../models/user/user_model.dart';
+import '../models/websites/website_model.dart';
+import '../utils/constants/constants.dart';
+import '../utils/utililty_functions/utility_functions.dart';
 
 class OpenApiService {
   // DIO SETTINGS
@@ -31,15 +30,15 @@ class OpenApiService {
       InterceptorsWrapper(
         onError: (error, handler) async {
           //error.response.statusCode
-          debugPrint("ERRORGA KIRDI:${error.message} and ${error.response}");
+          print("ERRORGA KIRDI:${error.message} and ${error.response}");
           return handler.next(error);
         },
         onRequest: (requestOptions, handler) async {
-          debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
+          print("SO'ROV  YUBORILDI :${requestOptions.path}");
           return handler.next(requestOptions);
         },
         onResponse: (response, handler) async {
-          debugPrint("JAVOB  KELDI :${response.requestOptions.path}");
+          print("JAVOB  KELDI :${response.requestOptions.path}");
           return handler.next(response);
         },
       ),

@@ -1,8 +1,7 @@
-import 'package:joyla/data/local/storage_repository.dart';
-import 'package:joyla/data/models/universal_data.dart';
-import 'package:joyla/data/models/user/user_model.dart';
-import 'package:joyla/data/network/open_api_service.dart';
-
+import 'package:network_side/local/storage_repository.dart';
+import 'package:network_side/models/universal_data.dart';
+import 'package:network_side/network/open_api_service.dart';
+import 'package:network_side/models/user/user_model.dart';
 class AuthRepository {
   final OpenApiService openApiService;
 

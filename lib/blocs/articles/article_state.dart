@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:joyla/data/models/articles/article_model.dart';
+import 'package:network_side/models/articles/article_model.dart';
 
 abstract class ArticleState extends Equatable {}
 

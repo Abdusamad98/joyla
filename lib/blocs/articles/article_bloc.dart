@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/blocs/articles/article_event.dart';
 import 'package:joyla/blocs/articles/article_state.dart';
-import 'package:joyla/data/models/articles/article_model.dart';
-import 'package:joyla/data/models/universal_data.dart';
+
 import 'package:joyla/data/repositories/article_repository.dart';
+import 'package:network_side/models/articles/article_model.dart';
+import 'package:network_side/models/universal_data.dart';
 
 class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   ArticleBloc({required this.articleRepository})

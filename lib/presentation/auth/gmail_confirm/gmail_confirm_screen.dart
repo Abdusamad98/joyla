@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/profile/profile_cubit.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
-import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
 import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
+import 'package:network_side/models/user/user_model.dart';
 
 class GmailConfirmScreen extends StatefulWidget {
 const  GmailConfirmScreen({super.key, required this.userModel});

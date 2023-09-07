@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:joyla/data/models/user/user_model.dart';
 import 'package:joyla/presentation/auth/gmail_confirm/gmail_confirm_screen.dart';
 import 'package:joyla/presentation/auth/login/login_screen.dart';
 import 'package:joyla/presentation/auth/register/register_screen.dart';
@@ -7,6 +6,7 @@ import 'package:joyla/presentation/splash/splash_screen.dart';
 import 'package:joyla/presentation/tab/tab_box.dart';
 import 'package:joyla/presentation/tab/websites/sub_screens/add_website_screen.dart';
 import 'package:joyla/presentation/tab/websites/sub_screens/website_detail_screen.dart';
+import 'package:network_side/models/user/user_model.dart';
 
 class RouteNames {
   static const String splashScreen = "/";

@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joyla/cubits/auth/auth_cubit.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
-import 'package:joyla/data/models/user/user_field_keys.dart';
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/presentation/auth/widgets/gender_selector.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
 import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
 import 'package:joyla/utils/colors/app_colors.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
+import 'package:network_side/models/user/user_field_keys.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

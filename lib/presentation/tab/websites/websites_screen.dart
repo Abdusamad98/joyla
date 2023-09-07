@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
-import 'package:joyla/data/models/status/form_status.dart';
-import 'package:joyla/data/models/websites/website_model.dart';
+
 import 'package:joyla/presentation/app_routes.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
+import 'package:network_side/models/websites/website_model.dart';
+import 'package:network_side/models/status/form_status.dart';
 
 class WebsitesScreen extends StatefulWidget {
   const WebsitesScreen({super.key});

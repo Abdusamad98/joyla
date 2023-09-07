@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joyla/cubits/user_data/user_data_cubit.dart';
-import 'package:joyla/data/models/user/user_field_keys.dart';
+
+import 'package:network_side/models/user/user_field_keys.dart';
 import 'package:joyla/utils/colors/app_colors.dart';
 
 class GenderSelector extends StatelessWidget {

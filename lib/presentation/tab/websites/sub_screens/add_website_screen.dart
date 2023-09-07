@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joyla/cubits/website_add/website_add_cubit.dart';
 import 'package:joyla/cubits/website_fetch/website_fetch_cubit.dart';
-import 'package:joyla/data/models/status/form_status.dart';
-import 'package:joyla/data/models/websites/website_field_keys.dart';
 import 'package:joyla/presentation/auth/widgets/global_button.dart';
 import 'package:joyla/presentation/auth/widgets/global_text_fields.dart';
 import 'package:joyla/utils/colors/app_colors.dart';
 import 'package:joyla/utils/constants/constants.dart';
 import 'package:joyla/utils/ui_utils/error_message_dialog.dart';
-
+import 'package:network_side/models/status/form_status.dart';
+import 'package:network_side/models/websites/website_field_keys.dart';
 class AddWebsiteScreen extends StatefulWidget {
   const AddWebsiteScreen({super.key});
 
